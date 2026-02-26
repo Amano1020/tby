@@ -1,26 +1,3 @@
-# High-Performance Order Management API
-
-A scalable, high-concurrency order management system designed to handle up to 5000 QPS.
-
-## Features
-- **Zero Foreign Keys**: Application-level joins and aggregations for maximum write throughput.
-- **Snowflake ID Generation**: Distributed, globally unique, high-performance ID assignment.
-- **Asynchronous Processing**: Order persistence via Apache RocketMQ for peak-shaving.
-- **Idempotency & Distributed Locks**: Industry-standard Redisson integration to prevent duplicate submissions or race conditions.
-- **Multi-Level Caching**: Caffeine (L1) + Redis (L2) for lightning-fast product reads.
-- **Design Patterns**: Chain of Responsibility implementation for extensible price calculation.
-- **Security**: IDOR (Insecure Direct Object Reference) prevention on resource modification endpoints.
-- **Unified API Responses**: Clean and consistent `{code, message, data}` payload wrap for all requests.
-
-## Tech Stack
-- Java 17, Spring Boot 3
-- MySQL 8.0
-- Redis 7.0 (Redisson Client)
-- Apache RocketMQ 4.9.4
-- Docker & Docker Compose
-
----
-
 ## 🚀 How to Run Locally
 
 We have provided a `docker-compose.yml` to spin up the entire infrastructure. It also includes an `init.sql` script that will automatically hydrate the MySQL database with test mock data.
