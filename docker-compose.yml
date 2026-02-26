@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: order-api-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: order_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: order-api-redis
+    ports:
+      - "6379:6379"
+
+  rmqnamesrv:
+    image: apache/rocketmq:4.9.4
+    container_name: rmqnamesrv
+    ports:
+      - 9876:9876
+    command: sh mqnamesrv
+    environment:
+      JAVA_OPT: "${JAVA_OPT} -server -Xms128m -Xmx128m -Xmn128m"
+
+  rmqbroker:
+    image: apache/rocketmq:4.9.4
+    container_name: rmqbroker
+    ports:
+      - 10909:10909
+      - 10911:10911
+    volumes:
+      - ./conf/broker.conf:/opt/rocketmq/conf/broker.conf
+    command: sh mqbroker -n rmqnamesrv:9876 -c /opt/rocketmq/conf/broker.conf autoCreateTopicEnable=true
+    environment:
+      JAVA_OPT: "${JAVA_OPT} -server -Xms256m -Xmx256m -Xmn128m"
+    depends_on:
+      - rmqnamesrv
+
+volumes:
+  mysql_data:
